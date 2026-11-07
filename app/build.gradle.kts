@@ -9,19 +9,20 @@ android {
 
     defaultConfig {
         applicationId = "com.timeline.atlas"
-        minSdk = 21              // 兼容 2015 年之后的安卓电视 / 盒子
+        minSdk = 23              // Android 6.0 起（API 21/22 的 WebView 兼容性差，且占比已很低）
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
+        multiDexEnabled = true
     }
 
     buildTypes {
         debug {
             isMinifyEnabled = false
+            isDebuggable = true
         }
         release {
             isMinifyEnabled = false
-            // 想发正式包再配签名；电视侧载用 debug 包即可
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -33,12 +34,17 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    // assets 里的 data/*.js 已经是文本，避免被压缩算法误伤
     androidResources {
         noCompress += listOf("pdf")
+    }
+    packaging {
+        resources.excludes += setOf("META-INF/*.kotlin_module")
     }
 }
 
 dependencies {
-    // 刻意不引 androidx：只用系统 Activity + WebView，构建更快、依赖更少
+    // 显式声明 Kotlin 标准库：默认会自动加，但显式写死可避免某些 AGP/Kotlin 组合下
+    // stdlib 没被打进 APK，导致启动即 NoClassDefFoundError（表现就是"点开立刻退回桌面"）
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+    // 仍然不引 androidx：只用系统 Activity + WebView
 }
