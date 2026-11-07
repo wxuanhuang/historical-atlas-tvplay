@@ -11,18 +11,20 @@
 
     <application
         android:label="时空巧记"
-        android:icon="@android:drawable/ic_menu_compass"
-        android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen"
+        android:theme="@android:style/Theme.Material.NoActionBar"
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true"
         android:largeHeap="true">
 
+        <!-- sensorLandscape：只允许横屏，但允许 180° 翻转。
+             原来写死 landscape，部分手机竖屏握持时会连续重建 Activity，
+             表现为「点开闪一下又退回」。 -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
-            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|uiMode">
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboardHidden|screenLayout|uiMode|density">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
